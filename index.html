@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Todo App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    #todo-container {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    #stats {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    li.done span {
+      text-decoration: line-through;
+      color: gray;
+    }
+    button {
+      margin-left: 5px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    #controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 5px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Todo App</h1>
+  <div id="todo-container">
+    <div id="stats">Done: 0 / Total: 0</div>
+    <ul id="todo-list"></ul>
+    <div id="controls">
+      <input type="text" id="new-item" placeholder="Add new task...">
+      <button onclick="addItem()">Add</button>
+      <button onclick="deleteCompleted()">Delete Done</button>
+    </div>
+  </div>
+
+  <script>
+    const todoList = document.getElementById('todo-list');
+    const stats = document.getElementById('stats');
+
+    function updateStats() {
+      const items = todoList.querySelectorAll('li');
+      const doneItems = todoList.querySelectorAll('li.done');
+      stats.textContent = `Done: ${doneItems.length} / Total: ${items.length}`;
+    }
+
+    function addItem() {
+      const input = document.getElementById('new-item');
+      const text = input.value.trim();
+      if (text === '') return;
+
+      const li = document.createElement('li');
+      const span = document.createElement('span');
+      span.textContent = text;
+      span.onclick = () => {
+        li.classList.toggle('done');
+        updateStats();
+      };
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = 'Delete';
+      delBtn.onclick = () => {
+        li.remove();
+        updateStats();
+      };
+
+      li.appendChild(span);
+      li.appendChild(delBtn);
+      todoList.appendChild(li);
+
+      input.value = '';
+      updateStats();
+    }
+
+    function deleteCompleted() {
+      const doneItems = todoList.querySelectorAll('li.done');
+      doneItems.forEach(item => item.remove());
+      updateStats();
+    }
+
+    // Bonus: allow pressing Enter to add items
+    document.getElementById('new-item').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        addItem();
+      }
+    });
+  </script>
+</body>
+</html>
